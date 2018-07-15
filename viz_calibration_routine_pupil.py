@@ -5,8 +5,6 @@ with HTC Vive HMD
 Harun Karimpur, 2018
 harun.karimpur@psychol.uni-giessen.de
 '''
-#TODO: showmessage func doesn't work in Vive HMD
-
 
 
 import sys
@@ -16,6 +14,7 @@ import vizact
 import vizinfo
 import viztask
 import vizshape
+import vizmat
 import zmq, msgpack, time
 from msgpack import loads
 import numpy as np
@@ -94,6 +93,9 @@ n = {'subject':'start_plugin','name':'HMD_Calibration', 'args':{}}
 print(send_recv_notification(n))
 
 
+canvas = viz.addGUICanvas()
+canvas.setRenderWorldOverlay([2160, 1200], fov=85.0, distance=2.0)
+viz.MainWindow.setDefaultGUICanvas(canvas)
 
 def showMessage(msg):
 	"""	Show a message in the virtual environment until keypress """
@@ -214,13 +216,11 @@ def calibration():
 
 	time.sleep(2)
 		
-	vizinfo.InfoPanel('calibration done!')
+	showMessage('calibration done! - now validate!')
 
 	plane.remove()
 	
 	yield viztask.waitTime(2)
-
-	vizinfo.InfoPanel.remove()
 
 
 
@@ -382,7 +382,7 @@ def validation():
 				
 	time.sleep(2)
 		
-	vizinfo.InfoPanel('validation done!')
+	showMessage('validation done!')
 	
 	for p in norm_positions:
 		
@@ -414,11 +414,10 @@ def validation():
 		viel_link2 = viz.grab(viz.MainView, dot_v)
 		
 		# calculate angular error
-		a = line
-		b = line_v
-		cosangle = np.dot(a,b) / (np.linalg.norm(a) * np.linalg.norm(b))
-		angle = np.arccos(cosangle)
-		error = np.degrees(angle)
+		error = vizmat.AngleBetweenVector(line.dir, line_v.dir)
+#		cosangle = np.dot(a,b) / (np.linalg.norm(a) * np.linalg.norm(b))
+#		angle = np.arccos(cosangle)
+#		error = np.degrees(angle)
 		
 		ang_error.append(error)
 		
