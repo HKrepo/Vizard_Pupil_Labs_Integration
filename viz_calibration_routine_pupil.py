@@ -5,7 +5,7 @@ with HTC Vive HMD
 Harun Karimpur, 2018
 harun.karimpur@psychol.uni-giessen.de
 '''
-
+#TODO calculate angular error as theta = arccos(v1 * v1) - not sure if they used dot product
 
 import sys
 import viz
@@ -422,6 +422,9 @@ def validation():
 		ang_error.append(error)
 		
 		print('angle is: ', error, 'for ', p)
+
+	
+	showMessage('mean angular error is: {}'.format(np.mean(ang_error)))
 	
 	print('mean angular error is: ', np.mean(ang_error), ' deg/ visual angle')
 
